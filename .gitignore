@@ -1,0 +1,13 @@
+.env
+*.curl.txt
+pvhub-request.curl.txt
+response*.json
+Backup/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+.idea/
+.vscode/
