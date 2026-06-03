@@ -347,8 +347,6 @@ The integration ships a local brand icon hint using `mdi:solar-panel`, and the e
 5. Home Assistant will open a setup form asking for:
    - `PVHUB_API_URL`
    - `PVHUB_PLANT_ID / GROUPID`
-   - Authentication method
-   - PVHub username/password, or copied request headers
    - `PVHUB_COOKIE`
    - `PVHUB_TOKEN`
    - `PVHUB_SIGNATURE`
@@ -358,14 +356,9 @@ The integration ships a local brand icon hint using `mdi:solar-panel`, and the e
 
 The config flow performs one read-only validation request before creating the entry.
 
-### Authentication Modes
+### Authentication
 
-The integration supports two setup modes:
-
-- Copied PVHub request headers: the most reliable current method. Copy `Cookie`, `Token`, `Signature`, and `Timestamp` from your own `/dew/w/plant/analysis/raw` request.
-- PVHub username and password: experimental. The PVHub web app posts to `/basic/v0/user/login` with an MD5-hashed password. This integration follows that first-party flow only when PVHub accepts it. It does not bypass MFA, CAPTCHA, Cloudflare, region checks, or other security controls.
-
-At the moment, copied request headers are the recommended setup path. PVHub signs browser requests with `signature.js` and `signature.wasm`; username/password setup may fail until automatic signature generation is implemented.
+The integration uses copied PVHub request headers. Copy `Cookie`, `Token`, `Signature`, and `Timestamp` from your own `/dew/w/plant/analysis/raw` request in Chrome DevTools.
 
 If PVHub rejects the stored auth details, Home Assistant will create a Repair issue titled `PVHub credentials expired` with instructions to update the integration.
 
@@ -403,9 +396,9 @@ HACS stores custom integrations under `custom_components/`; this project include
 
 ## Releases
 
-Current version: `v0.1.3`.
+Current version: `v0.1.4`.
 
-Use the latest GitHub release for HACS installs. `v0.1.3` adds clearer setup errors for copied-header auth failures versus experimental username/password auth failures.
+Use the latest GitHub release for HACS installs. `v0.1.4` restores the copied-header-only setup flow.
 
 ## Dashboard Card
 

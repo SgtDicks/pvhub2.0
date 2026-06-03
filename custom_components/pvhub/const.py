@@ -18,12 +18,6 @@ CONF_SIGNATURE = "signature"
 CONF_TIMESTAMP = "timestamp"
 CONF_LANG = "lang"
 CONF_TIMEZONE = "timezone"
-CONF_USERNAME = "username"
-CONF_PASSWORD = "password"
-CONF_AUTH_MODE = "auth_mode"
-
-AUTH_MODE_HEADERS = "headers"
-AUTH_MODE_PASSWORD = "password"
 
 READ_ONLY_WARNING = (
     "PVHub 2.0 only performs guarded GET/read-only POST monitoring "

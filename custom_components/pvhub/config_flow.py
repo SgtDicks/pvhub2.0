@@ -13,20 +13,15 @@ from homeassistant.core import HomeAssistant
 from .api import PVHubAuthError, PVHubClient, PVHubError
 from .const import (
     CONF_API_URL,
-    CONF_AUTH_MODE,
     CONF_COOKIE,
     CONF_LANG,
     CONF_PLANT_ID,
-    CONF_PASSWORD,
     CONF_SIGNATURE,
     CONF_TIMESTAMP,
     CONF_TIMEZONE,
     CONF_TOKEN,
-    CONF_USERNAME,
     DEFAULT_API_URL,
     DEFAULT_LANG,
-    AUTH_MODE_HEADERS,
-    AUTH_MODE_PASSWORD,
     DOMAIN,
 )
 
@@ -55,10 +50,7 @@ class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await validate_input(self.hass, user_input)
             except PVHubAuthError as exc:
                 _LOGGER.debug("PVHub authentication validation failed: %s", exc)
-                if user_input.get(CONF_AUTH_MODE) == AUTH_MODE_PASSWORD:
-                    errors["base"] = "password_auth_not_supported"
-                else:
-                    errors["base"] = "auth_failed"
+                errors["base"] = "auth_failed"
             except PVHubError as exc:
                 _LOGGER.debug("PVHub validation failed: %s", exc)
                 errors["base"] = "cannot_connect"
@@ -77,18 +69,10 @@ class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_API_URL, default=DEFAULT_API_URL): str,
                     vol.Required(CONF_PLANT_ID): str,
-                    vol.Required(CONF_AUTH_MODE, default=AUTH_MODE_HEADERS): vol.In(
-                        {
-                            AUTH_MODE_HEADERS: "Copied PVHub request headers",
-                            AUTH_MODE_PASSWORD: "PVHub username and password",
-                        }
-                    ),
-                    vol.Optional(CONF_USERNAME): str,
-                    vol.Optional(CONF_PASSWORD): str,
-                    vol.Optional(CONF_COOKIE): str,
-                    vol.Optional(CONF_TOKEN): str,
-                    vol.Optional(CONF_SIGNATURE): str,
-                    vol.Optional(CONF_TIMESTAMP): str,
+                    vol.Required(CONF_COOKIE): str,
+                    vol.Required(CONF_TOKEN): str,
+                    vol.Required(CONF_SIGNATURE): str,
+                    vol.Required(CONF_TIMESTAMP): str,
                     vol.Optional(CONF_LANG, default=DEFAULT_LANG): str,
                     vol.Optional(CONF_TIMEZONE): str,
                 }
