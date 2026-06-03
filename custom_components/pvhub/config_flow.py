@@ -10,7 +10,7 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 
-from .api import PVHubClient, PVHubError
+from .api import PVHubAuthError, PVHubClient, PVHubError
 from .const import (
     CONF_API_URL,
     CONF_AUTH_MODE,
@@ -53,7 +53,14 @@ class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 await validate_input(self.hass, user_input)
-            except PVHubError:
+            except PVHubAuthError as exc:
+                _LOGGER.debug("PVHub authentication validation failed: %s", exc)
+                if user_input.get(CONF_AUTH_MODE) == AUTH_MODE_PASSWORD:
+                    errors["base"] = "password_auth_not_supported"
+                else:
+                    errors["base"] = "auth_failed"
+            except PVHubError as exc:
+                _LOGGER.debug("PVHub validation failed: %s", exc)
                 errors["base"] = "cannot_connect"
             except Exception:
                 _LOGGER.exception("Unexpected error while validating PVHub config flow")

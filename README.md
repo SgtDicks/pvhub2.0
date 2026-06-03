@@ -403,9 +403,9 @@ HACS stores custom integrations under `custom_components/`; this project include
 
 ## Releases
 
-Current version: `v0.1.2`.
+Current version: `v0.1.3`.
 
-Use the latest GitHub release for HACS installs. `v0.1.2` improves the setup error shown when username/password login is rejected by PVHub's signed-request flow.
+Use the latest GitHub release for HACS installs. `v0.1.3` adds clearer setup errors for copied-header auth failures versus experimental username/password auth failures.
 
 ## Dashboard Card
 

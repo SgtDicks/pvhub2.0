@@ -33,7 +33,9 @@
       }
     },
     "error": {
-      "cannot_connect": "Could not read PVHub data with these details. Username/password login is experimental and may be rejected by PVHub's signed-request flow. Use copied request headers from Chrome DevTools for now."
+      "cannot_connect": "Could not read PVHub data with these details. Check the endpoint, plant ID, and network connection.",
+      "auth_failed": "PVHub rejected the copied authentication headers. Copy fresh Cookie, Token, Signature, and Timestamp values from Chrome DevTools and try again.",
+      "password_auth_not_supported": "PVHub rejected username/password login. PVHub signs browser requests, so use copied request headers from Chrome DevTools until automatic signature generation is supported."
     },
     "abort": {
       "already_configured": "This PVHub plant is already configured."
