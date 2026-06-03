@@ -1,0 +1,40 @@
+# Example Home Assistant command_line configuration for PVHub 2.0.
+#
+# Copy the project folder to your Home Assistant config directory, for example:
+# /config/pvhub_readonly
+#
+# Then include this file from configuration.yaml:
+# command_line: !include command_line.yaml
+#
+# Adjust the command path to match where you copied the project.
+
+- sensor:
+    name: PVHub Readonly
+    unique_id: pvhub_readonly
+    command: "cd /config/pvhub_readonly && python3 -m pvhub_readonly.homeassistant_sensor"
+    command_timeout: 30
+    scan_interval: 300
+    value_template: "{{ value_json.status }}"
+    json_attributes:
+      - updated_at
+      - battery_soc_percent
+      - pv_power_kw
+      - battery_charge_power_kw
+      - battery_discharge_power_kw
+      - grid_export_power_kw
+      - grid_import_power_kw
+      - load_power_kw
+      - battery_soc_percent_raw
+      - pv_power_kw_raw
+      - battery_charge_power_kw_raw
+      - battery_discharge_power_kw_raw
+      - grid_export_power_kw_raw
+      - grid_import_power_kw_raw
+      - load_power_kw_raw
+      - battery_soc_percent_display
+      - pv_power_kw_display
+      - battery_charge_power_kw_display
+      - battery_discharge_power_kw_display
+      - grid_export_power_kw_display
+      - grid_import_power_kw_display
+      - load_power_kw_display

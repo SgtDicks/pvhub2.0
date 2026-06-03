@@ -1,0 +1,11 @@
+{
+  "domain": "pvhub",
+  "name": "PVHub 2.0 Readonly",
+  "codeowners": [],
+  "config_flow": true,
+  "documentation": "https://github.com/local/pvhub-readonly",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/local/pvhub-readonly/issues",
+  "requirements": ["requests>=2.32.0"],
+  "version": "0.1.0"
+}

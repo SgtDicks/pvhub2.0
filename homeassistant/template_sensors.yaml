@@ -1,0 +1,54 @@
+# Optional Home Assistant template sensors created from sensor.pvhub_readonly.
+#
+# Include from configuration.yaml with:
+# template: !include template_sensors.yaml
+
+- sensor:
+    - name: PVHub Battery SoC
+      unique_id: pvhub_battery_soc
+      device_class: battery
+      state_class: measurement
+      unit_of_measurement: "%"
+      state: "{{ state_attr('sensor.pvhub_readonly', 'battery_soc_percent') | float(0) }}"
+
+    - name: PVHub Solar Power
+      unique_id: pvhub_solar_power
+      device_class: power
+      state_class: measurement
+      unit_of_measurement: kW
+      state: "{{ state_attr('sensor.pvhub_readonly', 'pv_power_kw') | float(0) }}"
+
+    - name: PVHub Battery Charge Power
+      unique_id: pvhub_battery_charge_power
+      device_class: power
+      state_class: measurement
+      unit_of_measurement: kW
+      state: "{{ state_attr('sensor.pvhub_readonly', 'battery_charge_power_kw') | float(0) }}"
+
+    - name: PVHub Battery Discharge Power
+      unique_id: pvhub_battery_discharge_power
+      device_class: power
+      state_class: measurement
+      unit_of_measurement: kW
+      state: "{{ state_attr('sensor.pvhub_readonly', 'battery_discharge_power_kw') | float(0) }}"
+
+    - name: PVHub Grid Export Power
+      unique_id: pvhub_grid_export_power
+      device_class: power
+      state_class: measurement
+      unit_of_measurement: kW
+      state: "{{ state_attr('sensor.pvhub_readonly', 'grid_export_power_kw') | float(0) }}"
+
+    - name: PVHub Grid Import Power
+      unique_id: pvhub_grid_import_power
+      device_class: power
+      state_class: measurement
+      unit_of_measurement: kW
+      state: "{{ state_attr('sensor.pvhub_readonly', 'grid_import_power_kw') | float(0) }}"
+
+    - name: PVHub Load Power
+      unique_id: pvhub_load_power
+      device_class: power
+      state_class: measurement
+      unit_of_measurement: kW
+      state: "{{ state_attr('sensor.pvhub_readonly', 'load_power_kw') | float(0) }}"

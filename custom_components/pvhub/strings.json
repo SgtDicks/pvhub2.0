@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "PVHub 2.0 Readonly",
+        "description": "Paste values from your own PVHub 2.0 read-only Analysis request. This integration only polls monitoring data.",
+        "data": {
+          "api_url": "API URL",
+          "plant_id": "Plant ID / GROUPID",
+          "cookie": "Cookie header",
+          "token": "Token header",
+          "signature": "Signature header",
+          "timestamp": "Timestamp header",
+          "lang": "Language header",
+          "timezone": "Timezone header"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not read PVHub data with these details. Check copied headers and try again."
+    },
+    "abort": {
+      "already_configured": "This PVHub plant is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery_soc": {
+        "name": "Battery SoC"
+      },
+      "solar_power": {
+        "name": "Solar power"
+      },
+      "battery_charge_power": {
+        "name": "Battery charge power"
+      },
+      "battery_discharge_power": {
+        "name": "Battery discharge power"
+      },
+      "grid_export_power": {
+        "name": "Grid export power"
+      },
+      "grid_import_power": {
+        "name": "Grid import power"
+      },
+      "load_power": {
+        "name": "Load power"
+      }
+    }
+  }
+}

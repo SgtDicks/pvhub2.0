@@ -1,0 +1,8 @@
+# Add only manually captured/read-only-looking PVHub API endpoints here.
+# Lines beginning with # are ignored.
+# The endpoint tester will refuse paths containing unsafe words such as:
+# control, settings, config, update, delete, command, charge, discharge, export-limit, remote
+#
+# Example placeholders:
+https://example.pv-hub-api.invalid/path/to/read-only-meter-history
+https://example.pv-hub-api.invalid/path/to/read-only-report
