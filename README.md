@@ -339,15 +339,15 @@ The integration is still strictly read-only. It only calls the PVHub Analysis en
 2. Restart Home Assistant.
 3. Go to `Settings` -> `Devices & services` -> `Add integration`.
 4. Search for `PVHub 2.0 Readonly`.
-5. Enter values copied from your own PVHub DevTools request:
-   - API URL: `https://www.pv-hub.com/dew/w/plant/analysis/raw`
-   - Plant ID / GROUPID
-   - Cookie header
-   - Token header
-   - Signature header
-   - Timestamp header
-   - Lang
-   - Timezone
+5. Home Assistant will open a setup form asking for:
+   - `PVHUB_API_URL`
+   - `PVHUB_PLANT_ID / GROUPID`
+   - `PVHUB_COOKIE`
+   - `PVHUB_TOKEN`
+   - `PVHUB_SIGNATURE`
+   - `PVHUB_TIMESTAMP`
+   - `PVHUB_LANG`
+   - `PVHUB_TIMEZONE`
 
 The config flow performs one read-only validation request before creating the entry.
 
