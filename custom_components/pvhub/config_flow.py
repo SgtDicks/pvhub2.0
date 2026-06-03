@@ -59,16 +59,16 @@ class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_API_URL, default=DEFAULT_API_URL): str,
                     vol.Required(CONF_PLANT_ID): str,
-                    vol.Optional(CONF_COOKIE): selector.TextSelector(
+                    vol.Required(CONF_COOKIE): selector.TextSelector(
                         selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
                     ),
-                    vol.Optional(CONF_TOKEN): selector.TextSelector(
+                    vol.Required(CONF_TOKEN): selector.TextSelector(
                         selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
                     ),
-                    vol.Optional(CONF_SIGNATURE): selector.TextSelector(
+                    vol.Required(CONF_SIGNATURE): selector.TextSelector(
                         selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
                     ),
-                    vol.Optional(CONF_TIMESTAMP): selector.TextSelector(
+                    vol.Required(CONF_TIMESTAMP): selector.TextSelector(
                         selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
                     ),
                     vol.Optional(CONF_LANG, default=DEFAULT_LANG): str,
