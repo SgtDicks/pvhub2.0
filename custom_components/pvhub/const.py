@@ -1,4 +1,4 @@
-"""Constants for the PVHub 2.0 Readonly integration."""
+"""Constants for the PVHub 2.0 integration."""
 
 from __future__ import annotations
 
@@ -20,6 +20,6 @@ CONF_LANG = "lang"
 CONF_TIMEZONE = "timezone"
 
 READ_ONLY_WARNING = (
-    "PVHub 2.0 Readonly only performs guarded GET/read-only POST monitoring "
+    "PVHub 2.0 only performs guarded GET/read-only POST monitoring "
     "requests. It must not be used for inverter, battery, export, or account control."
 )

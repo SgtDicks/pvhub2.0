@@ -1,10 +1,10 @@
-# PVHub 2.0 Read-Only Monitor
+# PVHub 2.0 Home Assistant Integration
 
 Small Python helper project for safely exploring and reading your own 1KOMMA5 / PVHub 2.0 solar data.
 
 [![Open your Home Assistant instance and add this repository to HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=SgtDicks&repository=pvhub2.0&category=integration)
 
-This project is intentionally read-only. It does not include inverter control, battery control, export-limit changes, configuration updates, device management, or automation actions.
+This project is intentionally monitoring-only. It does not include inverter control, battery control, export-limit changes, configuration updates, device management, or automation actions.
 
 ## Safety Rules
 
@@ -45,9 +45,12 @@ The scripts print a dry-run style summary before each request, but never print b
 │       ├── coordinator.py
 │       ├── manifest.json
 │       ├── sensor.py
-│       └── strings.json
+│       ├── strings.json
+│       └── brand/
+│           └── icon.txt
 ├── homeassistant/
 │   ├── command_line.yaml
+│   ├── power_flow_apexcharts.yaml
 │   └── template_sensors.yaml
 ├── hacs.json
 └── endpoints.example.txt
@@ -324,9 +327,11 @@ The entities are grouped into Home Assistant devices:
 - `PVHub Battery`
 - `PVHub Solar Inverter`
 - `PVHub Grid Meter`
-- `PVHub Site Load`
+- `Site Power Usage`
 
 The integration is still strictly read-only. It only calls the PVHub Analysis endpoint with a monitoring/report payload and keeps the same endpoint/method safety checks.
+
+The integration ships a local brand icon hint using `mdi:solar-panel`, and the entities also use solar, battery, grid, and home power icons. Home Assistant local custom integration brand assets are supported through a `brand/` directory in newer Home Assistant versions; entity icons work independently of that.
 
 ### Manual Install
 
@@ -338,7 +343,7 @@ The integration is still strictly read-only. It only calls the PVHub Analysis en
 
 2. Restart Home Assistant.
 3. Go to `Settings` -> `Devices & services` -> `Add integration`.
-4. Search for `PVHub 2.0 Readonly`.
+4. Search for `PVHub 2.0`.
 5. Home Assistant will open a setup form asking for:
    - `PVHUB_API_URL`
    - `PVHUB_PLANT_ID / GROUPID`
@@ -366,8 +371,96 @@ Or add it manually:
 3. Choose `Custom repositories`.
 4. Add `https://github.com/SgtDicks/pvhub2.0`.
 5. Select category `Integration`.
-6. Install `PVHub 2.0 Readonly`.
+6. Install `PVHub 2.0`.
 7. Restart Home Assistant.
 8. Add it from `Settings` -> `Devices & services`.
 
 HACS stores custom integrations under `custom_components/`; this project includes `hacs.json` and `custom_components/pvhub/manifest.json` for that layout.
+
+## Dashboard Card
+
+For a graph like the PVHub portal's combined power/SOC chart, install `apexcharts-card` from HACS, then add a manual card with this YAML:
+
+```yaml
+type: custom:apexcharts-card
+graph_span: 24h
+header:
+  show: true
+  title: PVHub Power and Battery
+  show_states: true
+span:
+  start: day
+now:
+  show: true
+apex_config:
+  chart:
+    height: 360
+  stroke:
+    width: 2
+  legend:
+    show: true
+    position: right
+  grid:
+    borderColor: "#d7dbe0"
+yaxis:
+  - id: power
+    min: ~-6
+    max: ~6
+    decimals: 1
+    apex_config:
+      title:
+        text: Power (kW)
+  - id: soc
+    opposite: true
+    min: 0
+    max: 100
+    decimals: 0
+    apex_config:
+      title:
+        text: SOC
+series:
+  - entity: sensor.pvhub_battery_soc
+    name: SoC
+    yaxis_id: soc
+    color: "#38c978"
+  - entity: sensor.pvhub_solar_power
+    attribute: raw
+    name: Solar
+    yaxis_id: power
+    color: "#0097a7"
+  - entity: sensor.pvhub_battery_discharge_power
+    attribute: raw
+    name: Battery Discharge
+    yaxis_id: power
+    color: "#5aa2ff"
+  - entity: sensor.pvhub_grid_import_power
+    attribute: raw
+    name: Grid Import
+    yaxis_id: power
+    color: "#b586f4"
+  - entity: sensor.pvhub_grid_export_power
+    attribute: raw
+    name: Grid Export
+    yaxis_id: power
+    color: "#7d197b"
+  - entity: sensor.pvhub_battery_charge_power
+    attribute: raw
+    name: Battery Charge
+    yaxis_id: power
+    color: "#ef2a8a"
+  - entity: sensor.pvhub_load_power
+    attribute: raw
+    name: Total Load
+    yaxis_id: power
+    color: "#ff7c0a"
+```
+
+The same card is also saved in `homeassistant/power_flow_apexcharts.yaml`.
+
+## Suggestions
+
+- Keep the polling interval around 5 minutes unless you know PVHub tolerates faster refreshes.
+- Add sensors to Home Assistant's Energy dashboard only after you add energy-in-kWh entities; the current entities are power-in-kW snapshots.
+- Keep raw signed values as attributes for graphing, and friendly positive values as entity states for normal dashboard tiles.
+- Automating PVHub signature generation would make the integration more reliable than copied `PVHUB_SIGNATURE` and `PVHUB_TIMESTAMP` values.
+- Capturing a device inventory endpoint would let the integration create exact physical devices with serial numbers instead of logical devices.

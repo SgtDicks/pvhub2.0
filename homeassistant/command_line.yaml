@@ -9,7 +9,7 @@
 # Adjust the command path to match where you copied the project.
 
 - sensor:
-    name: PVHub Readonly
+    name: PVHub
     unique_id: pvhub_readonly
     command: "cd /config/pvhub_readonly && python3 -m pvhub_readonly.homeassistant_sensor"
     command_timeout: 30

@@ -1,4 +1,4 @@
-"""Data coordinator for PVHub 2.0 Readonly."""
+"""Data coordinator for PVHub 2.0."""
 
 from __future__ import annotations
 

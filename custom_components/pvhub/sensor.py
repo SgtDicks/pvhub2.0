@@ -1,4 +1,4 @@
-"""PVHub 2.0 Readonly sensors."""
+"""PVHub 2.0 sensors."""
 
 from __future__ import annotations
 
@@ -36,6 +36,7 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="battery_soc",
         translation_key="battery_soc",
         source_key="battery_soc_percent",
+        icon="mdi:battery",
         device_key="battery",
         device_name="PVHub Battery",
         device_model="PVHub Battery",
@@ -47,6 +48,7 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="solar_power",
         translation_key="solar_power",
         source_key="pv_power_kw",
+        icon="mdi:solar-panel",
         device_key="solar",
         device_name="PVHub Solar Inverter",
         device_model="PVHub Solar / Inverter",
@@ -58,6 +60,7 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="battery_charge_power",
         translation_key="battery_charge_power",
         source_key="battery_charge_power_kw",
+        icon="mdi:battery-arrow-up",
         device_key="battery",
         device_name="PVHub Battery",
         device_model="PVHub Battery",
@@ -69,6 +72,7 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="battery_discharge_power",
         translation_key="battery_discharge_power",
         source_key="battery_discharge_power_kw",
+        icon="mdi:battery-arrow-down",
         device_key="battery",
         device_name="PVHub Battery",
         device_model="PVHub Battery",
@@ -80,6 +84,7 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="grid_export_power",
         translation_key="grid_export_power",
         source_key="grid_export_power_kw",
+        icon="mdi:transmission-tower-export",
         device_key="grid",
         device_name="PVHub Grid Meter",
         device_model="PVHub Meter",
@@ -91,6 +96,7 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="grid_import_power",
         translation_key="grid_import_power",
         source_key="grid_import_power_kw",
+        icon="mdi:transmission-tower-import",
         device_key="grid",
         device_name="PVHub Grid Meter",
         device_model="PVHub Meter",
@@ -102,9 +108,10 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="load_power",
         translation_key="load_power",
         source_key="load_power_kw",
+        icon="mdi:home-lightning-bolt",
         device_key="load",
-        device_name="PVHub Site Load",
-        device_model="PVHub Load",
+        device_name="Site Power Usage",
+        device_model="PVHub Site Power Usage",
         native_unit_of_measurement=UnitOfPower.KILO_WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,

@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "PVHub 2.0 Readonly",
-        "description": "Paste these values from Chrome DevTools -> Network -> the read-only /dew/w/plant/analysis/raw request. This integration only polls monitoring data and does not control the inverter, battery, meter, or account.",
+        "title": "PVHub 2.0",
+        "description": "Paste these values from Chrome DevTools -> Network -> the /dew/w/plant/analysis/raw monitoring request. This integration only polls monitoring data and does not control the inverter, battery, meter, or account.",
         "data": {
           "api_url": "PVHUB_API_URL",
           "plant_id": "PVHUB_PLANT_ID / GROUPID",

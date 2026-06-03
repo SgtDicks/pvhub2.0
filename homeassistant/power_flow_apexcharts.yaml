@@ -1,0 +1,71 @@
+type: custom:apexcharts-card
+graph_span: 24h
+header:
+  show: true
+  title: PVHub Power and Battery
+  show_states: true
+span:
+  start: day
+now:
+  show: true
+apex_config:
+  chart:
+    height: 360
+  stroke:
+    width: 2
+  legend:
+    show: true
+    position: right
+  grid:
+    borderColor: "#d7dbe0"
+yaxis:
+  - id: power
+    min: ~-6
+    max: ~6
+    decimals: 1
+    apex_config:
+      title:
+        text: Power (kW)
+  - id: soc
+    opposite: true
+    min: 0
+    max: 100
+    decimals: 0
+    apex_config:
+      title:
+        text: SOC
+series:
+  - entity: sensor.pvhub_battery_soc
+    name: SoC
+    yaxis_id: soc
+    color: "#38c978"
+  - entity: sensor.pvhub_solar_power
+    attribute: raw
+    name: Solar
+    yaxis_id: power
+    color: "#0097a7"
+  - entity: sensor.pvhub_battery_discharge_power
+    attribute: raw
+    name: Battery Discharge
+    yaxis_id: power
+    color: "#5aa2ff"
+  - entity: sensor.pvhub_grid_import_power
+    attribute: raw
+    name: Grid Import
+    yaxis_id: power
+    color: "#b586f4"
+  - entity: sensor.pvhub_grid_export_power
+    attribute: raw
+    name: Grid Export
+    yaxis_id: power
+    color: "#7d197b"
+  - entity: sensor.pvhub_battery_charge_power
+    attribute: raw
+    name: Battery Charge
+    yaxis_id: power
+    color: "#ef2a8a"
+  - entity: sensor.pvhub_load_power
+    attribute: raw
+    name: Total Load
+    yaxis_id: power
+    color: "#ff7c0a"

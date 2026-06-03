@@ -1,4 +1,4 @@
-"""Config flow for PVHub 2.0 Readonly."""
+"""Config flow for PVHub 2.0."""
 
 from __future__ import annotations
 

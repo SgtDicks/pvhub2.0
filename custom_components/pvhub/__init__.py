@@ -1,4 +1,4 @@
-"""PVHub 2.0 Readonly integration."""
+"""PVHub 2.0 integration."""
 
 from __future__ import annotations
 
