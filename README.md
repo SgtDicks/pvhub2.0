@@ -130,8 +130,8 @@ PVHUB_TIMESTAMP=paste-your-timestamp-header-here
 PVHUB_LANG=English
 PVHUB_TIMEZONE=Australia/Brisbane
 PVHUB_BEARER_TOKEN=
-PVHUB_PLANT_ID=5343e453-a5dc-4bfc-ade7-5fc8b0638be2
-PVHUB_RAIL_ID=619ee290-5d6d-41bf-8dde-d8fc3cd09685
+PVHUB_PLANT_ID=
+PVHUB_RAIL_ID=
 ```
 
 Cookies and tokens expire. If you receive `401` or `403`, capture fresh auth headers from your own logged-in PVHub browser session.
