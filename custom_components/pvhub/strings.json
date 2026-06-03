@@ -3,16 +3,26 @@
     "step": {
       "user": {
         "title": "PVHub 2.0 Readonly",
-        "description": "Paste values from your own PVHub 2.0 read-only Analysis request. This integration only polls monitoring data.",
+        "description": "Paste these values from Chrome DevTools -> Network -> the read-only /dew/w/plant/analysis/raw request. This integration only polls monitoring data and does not control the inverter, battery, meter, or account.",
         "data": {
-          "api_url": "API URL",
-          "plant_id": "Plant ID / GROUPID",
-          "cookie": "Cookie header",
-          "token": "Token header",
-          "signature": "Signature header",
-          "timestamp": "Timestamp header",
-          "lang": "Language header",
-          "timezone": "Timezone header"
+          "api_url": "PVHUB_API_URL",
+          "plant_id": "PVHUB_PLANT_ID / GROUPID",
+          "cookie": "PVHUB_COOKIE",
+          "token": "PVHUB_TOKEN",
+          "signature": "PVHUB_SIGNATURE",
+          "timestamp": "PVHUB_TIMESTAMP",
+          "lang": "PVHUB_LANG",
+          "timezone": "PVHUB_TIMEZONE"
+        },
+        "data_description": {
+          "api_url": "Usually https://www.pv-hub.com/dew/w/plant/analysis/raw",
+          "plant_id": "The GROUPID value from the PVHub page URL.",
+          "cookie": "Copy the full Cookie request header value.",
+          "token": "Copy the Token request header value.",
+          "signature": "Copy the Signature request header value.",
+          "timestamp": "Copy the Timestamp request header value.",
+          "lang": "Copy the Lang request header value, usually en or English.",
+          "timezone": "Copy the Timezone request header value, for example Australia/Brisbane."
         }
       }
     },
