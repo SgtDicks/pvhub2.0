@@ -26,6 +26,9 @@ class PVHubSensorEntityDescription(SensorEntityDescription):
     """PVHub sensor description."""
 
     source_key: str
+    device_key: str
+    device_name: str
+    device_model: str
 
 
 SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
@@ -33,6 +36,9 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="battery_soc",
         translation_key="battery_soc",
         source_key="battery_soc_percent",
+        device_key="battery",
+        device_name="PVHub Battery",
+        device_model="PVHub Battery",
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
@@ -41,6 +47,9 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="solar_power",
         translation_key="solar_power",
         source_key="pv_power_kw",
+        device_key="solar",
+        device_name="PVHub Solar Inverter",
+        device_model="PVHub Solar / Inverter",
         native_unit_of_measurement=UnitOfPower.KILO_WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -49,6 +58,9 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="battery_charge_power",
         translation_key="battery_charge_power",
         source_key="battery_charge_power_kw",
+        device_key="battery",
+        device_name="PVHub Battery",
+        device_model="PVHub Battery",
         native_unit_of_measurement=UnitOfPower.KILO_WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -57,6 +69,9 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="battery_discharge_power",
         translation_key="battery_discharge_power",
         source_key="battery_discharge_power_kw",
+        device_key="battery",
+        device_name="PVHub Battery",
+        device_model="PVHub Battery",
         native_unit_of_measurement=UnitOfPower.KILO_WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -65,6 +80,9 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="grid_export_power",
         translation_key="grid_export_power",
         source_key="grid_export_power_kw",
+        device_key="grid",
+        device_name="PVHub Grid Meter",
+        device_model="PVHub Meter",
         native_unit_of_measurement=UnitOfPower.KILO_WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -73,6 +91,9 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="grid_import_power",
         translation_key="grid_import_power",
         source_key="grid_import_power_kw",
+        device_key="grid",
+        device_name="PVHub Grid Meter",
+        device_model="PVHub Meter",
         native_unit_of_measurement=UnitOfPower.KILO_WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -81,6 +102,9 @@ SENSORS: tuple[PVHubSensorEntityDescription, ...] = (
         key="load_power",
         translation_key="load_power",
         source_key="load_power_kw",
+        device_key="load",
+        device_name="PVHub Site Load",
+        device_model="PVHub Load",
         native_unit_of_measurement=UnitOfPower.KILO_WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -116,10 +140,11 @@ class PVHubSensor(CoordinatorEntity[PVHubDataUpdateCoordinator], SensorEntity):
         plant_id = entry.data[CONF_PLANT_ID]
         self._attr_unique_id = f"{plant_id}_{description.key}"
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, plant_id)},
+            identifiers={(DOMAIN, f"{plant_id}_{description.device_key}")},
+            configuration_url="https://www.pv-hub.com/v2/plants/analysis",
             manufacturer="PVHub",
-            name="PVHub 2.0",
-            model="PVHub 2.0 Readonly",
+            name=description.device_name,
+            model=description.device_model,
         )
 
     @property
