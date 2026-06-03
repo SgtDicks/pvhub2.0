@@ -2,6 +2,8 @@
 
 Small Python helper project for safely exploring and reading your own 1KOMMA5 / PVHub 2.0 solar data.
 
+[![Open your Home Assistant instance and add this repository to HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=SgtDicks&repository=pvhub2.0&category=integration)
+
 This project is intentionally read-only. It does not include inverter control, battery control, export-limit changes, configuration updates, device management, or automation actions.
 
 ## Safety Rules
@@ -344,12 +346,16 @@ The config flow performs one read-only validation request before creating the en
 
 ### HACS Custom Repository
 
-Once this folder is pushed to a GitHub repository:
+Click the button below to open your Home Assistant instance and add this repository to HACS:
+
+[![Open your Home Assistant instance and add this repository to HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=SgtDicks&repository=pvhub2.0&category=integration)
+
+Or add it manually:
 
 1. Open HACS.
 2. Open `Integrations`.
 3. Choose `Custom repositories`.
-4. Add the repository URL.
+4. Add `https://github.com/SgtDicks/pvhub2.0`.
 5. Select category `Integration`.
 6. Install `PVHub 2.0 Readonly`.
 7. Restart Home Assistant.
