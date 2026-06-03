@@ -319,6 +319,13 @@ It creates these entities:
 - Grid import power
 - Load power
 
+The entities are grouped into Home Assistant devices:
+
+- `PVHub Battery`
+- `PVHub Solar Inverter`
+- `PVHub Grid Meter`
+- `PVHub Site Load`
+
 The integration is still strictly read-only. It only calls the PVHub Analysis endpoint with a monitoring/report payload and keeps the same endpoint/method safety checks.
 
 ### Manual Install
@@ -345,6 +352,8 @@ The integration is still strictly read-only. It only calls the PVHub Analysis en
 The config flow performs one read-only validation request before creating the entry.
 
 ### HACS Custom Repository
+
+Once this folder is pushed to a GitHub repository:
 
 Click the button below to open your Home Assistant instance and add this repository to HACS:
 
