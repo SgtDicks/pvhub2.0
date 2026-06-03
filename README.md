@@ -401,9 +401,9 @@ HACS stores custom integrations under `custom_components/`; this project include
 
 ## Releases
 
-Current version: `v0.1.0`.
+Current version: `v0.1.1`.
 
-Use the GitHub release/tag `v0.1.0` for the first stable HACS install.
+Use the latest GitHub release for HACS installs. `v0.1.1` fixes a config-flow compatibility issue in the setup popup.
 
 ## Dashboard Card
 

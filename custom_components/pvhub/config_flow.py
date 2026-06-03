@@ -8,7 +8,6 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import selector
 
 from .api import PVHubClient, PVHubError
 from .const import (
@@ -17,6 +16,7 @@ from .const import (
     CONF_COOKIE,
     CONF_LANG,
     CONF_PLANT_ID,
+    CONF_PASSWORD,
     CONF_SIGNATURE,
     CONF_TIMESTAMP,
     CONF_TIMEZONE,
@@ -38,7 +38,7 @@ class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(
         self,
         user_input: dict[str, Any] | None = None,
-    ) -> config_entries.ConfigFlowResult:
+    ):
         """Handle the initial step."""
 
         errors: dict[str, str] = {}
@@ -63,37 +63,18 @@ class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_API_URL, default=DEFAULT_API_URL): str,
                     vol.Required(CONF_PLANT_ID): str,
-                    vol.Required(CONF_AUTH_MODE, default=AUTH_MODE_HEADERS): selector.SelectSelector(
-                        selector.SelectSelectorConfig(
-                            options=[
-                                {
-                                    "value": AUTH_MODE_HEADERS,
-                                    "label": "Copied PVHub request headers",
-                                },
-                                {
-                                    "value": AUTH_MODE_PASSWORD,
-                                    "label": "PVHub username and password",
-                                },
-                            ],
-                            mode=selector.SelectSelectorMode.DROPDOWN,
-                        )
+                    vol.Required(CONF_AUTH_MODE, default=AUTH_MODE_HEADERS): vol.In(
+                        {
+                            AUTH_MODE_HEADERS: "Copied PVHub request headers",
+                            AUTH_MODE_PASSWORD: "PVHub username and password",
+                        }
                     ),
                     vol.Optional(CONF_USERNAME): str,
-                    vol.Optional(CONF_PASSWORD): selector.TextSelector(
-                        selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
-                    ),
-                    vol.Optional(CONF_COOKIE): selector.TextSelector(
-                        selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
-                    ),
-                    vol.Optional(CONF_TOKEN): selector.TextSelector(
-                        selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
-                    ),
-                    vol.Optional(CONF_SIGNATURE): selector.TextSelector(
-                        selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
-                    ),
-                    vol.Optional(CONF_TIMESTAMP): selector.TextSelector(
-                        selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
-                    ),
+                    vol.Optional(CONF_PASSWORD): str,
+                    vol.Optional(CONF_COOKIE): str,
+                    vol.Optional(CONF_TOKEN): str,
+                    vol.Optional(CONF_SIGNATURE): str,
+                    vol.Optional(CONF_TIMESTAMP): str,
                     vol.Optional(CONF_LANG, default=DEFAULT_LANG): str,
                     vol.Optional(CONF_TIMEZONE): str,
                 }
@@ -107,4 +88,3 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> None:
 
     client = PVHubClient.from_config(data)
     await hass.async_add_executor_job(client.get_analysis)
-    CONF_PASSWORD,
