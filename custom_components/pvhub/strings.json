@@ -7,6 +7,9 @@
         "data": {
           "api_url": "PVHUB_API_URL",
           "plant_id": "PVHUB_PLANT_ID / GROUPID",
+          "auth_mode": "Authentication method",
+          "username": "PVHub username",
+          "password": "PVHub password",
           "cookie": "PVHUB_COOKIE",
           "token": "PVHUB_TOKEN",
           "signature": "PVHUB_SIGNATURE",
@@ -17,6 +20,9 @@
         "data_description": {
           "api_url": "Usually https://www.pv-hub.com/dew/w/plant/analysis/raw",
           "plant_id": "The GROUPID value from the PVHub page URL.",
+          "auth_mode": "Username/password login is experimental. If PVHub rejects it, use copied request headers.",
+          "username": "Your PVHub username or email.",
+          "password": "Your PVHub password. This is stored in Home Assistant's config entry storage.",
           "cookie": "Copy the full Cookie request header value.",
           "token": "Copy the Token request header value.",
           "signature": "Copy the Signature request header value.",
@@ -56,6 +62,12 @@
       "load_power": {
         "name": "Load power"
       }
+    }
+  },
+  "issues": {
+    "auth_expired": {
+      "title": "PVHub credentials expired",
+      "description": "PVHub rejected the stored authentication details. Open Chrome DevTools, copy fresh values from the read-only `/dew/w/plant/analysis/raw` request, then reconfigure the PVHub integration with updated Cookie, Token, Signature, and Timestamp values. If you are using username/password mode, PVHub may require an interactive login or signed requests that this version cannot complete automatically."
     }
   }
 }

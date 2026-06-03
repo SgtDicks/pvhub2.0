@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
+import hashlib
 from typing import Any
 from urllib.parse import urlparse
 
@@ -11,6 +12,7 @@ import requests
 
 from .const import (
     CONF_API_URL,
+    CONF_AUTH_MODE,
     CONF_COOKIE,
     CONF_LANG,
     CONF_PLANT_ID,
@@ -18,8 +20,11 @@ from .const import (
     CONF_TIMESTAMP,
     CONF_TIMEZONE,
     CONF_TOKEN,
+    CONF_USERNAME,
     DEFAULT_LANG,
     DEFAULT_TIMEOUT,
+    AUTH_MODE_HEADERS,
+    AUTH_MODE_PASSWORD,
 )
 
 APPROVED_METHODS = {"GET", "POST"}
@@ -72,6 +77,9 @@ class PVHubAuth:
     timestamp: str | None
     lang: str
     timezone: str | None
+    username: str | None = None
+    password: str | None = None
+    auth_mode: str = AUTH_MODE_HEADERS
 
 
 class PVHubClient:
@@ -105,14 +113,44 @@ class PVHubClient:
                 timestamp=clean_value(data.get(CONF_TIMESTAMP)),
                 lang=clean_value(data.get(CONF_LANG)) or DEFAULT_LANG,
                 timezone=clean_value(data.get(CONF_TIMEZONE)),
+                username=clean_value(data.get(CONF_USERNAME)),
+                password=clean_value(data.get(CONF_PASSWORD)),
+                auth_mode=clean_value(data.get(CONF_AUTH_MODE)) or AUTH_MODE_HEADERS,
             ),
         )
 
     def get_analysis(self, requested_date: date | None = None) -> dict[str, Any]:
         """Fetch today's PVHub Analysis data."""
 
+        if self.auth.auth_mode == AUTH_MODE_PASSWORD and not self.auth.token:
+            self.login()
         payload = build_analysis_payload(self.plant_id, requested_date or date.today())
         return self._request_json("POST", self.api_url, payload)
+
+    def login(self) -> None:
+        """Log in using PVHub's first-party login endpoint when accepted.
+
+        PVHub currently signs browser requests using signature.js/signature.wasm.
+        This method intentionally does not bypass MFA, CAPTCHA, Cloudflare, or
+        other security controls. If PVHub rejects unsigned login requests, users
+        must continue using copied headers until automatic signing is supported.
+        """
+
+        if not self.auth.username or not self.auth.password:
+            raise PVHubAuthError("PVHub username/password are required")
+        parsed = urlparse(self.api_url)
+        login_url = f"{parsed.scheme}://{parsed.netloc}/basic/v0/user/login"
+        payload = {
+            "user": self.auth.username,
+            "password": hashlib.md5(self.auth.password.encode("utf-8")).hexdigest(),
+            "type": 1,
+            "verification": 1,
+        }
+        response = self._request_json("POST", login_url, payload)
+        result = response.get("result")
+        if not isinstance(result, dict) or not result.get("token"):
+            raise PVHubAuthError("PVHub login response did not include a token")
+        object.__setattr__(self.auth, "token", str(result["token"]))
 
     def _request_json(self, method: str, url: str, payload: dict[str, Any]) -> dict[str, Any]:
         assert_read_only_request(method, url)
@@ -232,6 +270,22 @@ def extract_sensor_data(data: dict[str, Any]) -> dict[str, Any]:
     return output
 
 
+def extract_device_inventory(data: dict[str, Any], plant_id: str) -> list[dict[str, str]]:
+    """Return logical PVHub devices exposed by the Analysis response."""
+
+    seen_variables = {item.get("variable") for item in find_series(data)}
+    devices: list[dict[str, str]] = []
+    if {"SoC", "batChargePower", "batDischargePower"} & seen_variables:
+        devices.append({"id": f"{plant_id}_battery", "name": "PVHub Battery", "model": "PVHub Battery"})
+    if "pvPower" in seen_variables:
+        devices.append({"id": f"{plant_id}_solar", "name": "PVHub Solar Inverter", "model": "PVHub Solar / Inverter"})
+    if {"feedinPower", "gridConsumptionPower"} & seen_variables:
+        devices.append({"id": f"{plant_id}_grid", "name": "PVHub Grid Meter", "model": "PVHub Meter"})
+    if "loadsPower" in seen_variables:
+        devices.append({"id": f"{plant_id}_load", "name": "Site Power Usage", "model": "PVHub Site Power Usage"})
+    return devices
+
+
 def find_series(data: Any) -> list[dict[str, Any]]:
     found: list[dict[str, Any]] = []
 
@@ -274,3 +328,4 @@ def clean_value(value: Any) -> str | None:
     if not stripped:
         return None
     return stripped
+    CONF_PASSWORD,

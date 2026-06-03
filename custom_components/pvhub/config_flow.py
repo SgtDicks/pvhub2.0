@@ -13,6 +13,7 @@ from homeassistant.helpers import selector
 from .api import PVHubClient, PVHubError
 from .const import (
     CONF_API_URL,
+    CONF_AUTH_MODE,
     CONF_COOKIE,
     CONF_LANG,
     CONF_PLANT_ID,
@@ -20,8 +21,11 @@ from .const import (
     CONF_TIMESTAMP,
     CONF_TIMEZONE,
     CONF_TOKEN,
+    CONF_USERNAME,
     DEFAULT_API_URL,
     DEFAULT_LANG,
+    AUTH_MODE_HEADERS,
+    AUTH_MODE_PASSWORD,
     DOMAIN,
 )
 
@@ -59,16 +63,35 @@ class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required(CONF_API_URL, default=DEFAULT_API_URL): str,
                     vol.Required(CONF_PLANT_ID): str,
-                    vol.Required(CONF_COOKIE): selector.TextSelector(
+                    vol.Required(CONF_AUTH_MODE, default=AUTH_MODE_HEADERS): selector.SelectSelector(
+                        selector.SelectSelectorConfig(
+                            options=[
+                                {
+                                    "value": AUTH_MODE_HEADERS,
+                                    "label": "Copied PVHub request headers",
+                                },
+                                {
+                                    "value": AUTH_MODE_PASSWORD,
+                                    "label": "PVHub username and password",
+                                },
+                            ],
+                            mode=selector.SelectSelectorMode.DROPDOWN,
+                        )
+                    ),
+                    vol.Optional(CONF_USERNAME): str,
+                    vol.Optional(CONF_PASSWORD): selector.TextSelector(
                         selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
                     ),
-                    vol.Required(CONF_TOKEN): selector.TextSelector(
+                    vol.Optional(CONF_COOKIE): selector.TextSelector(
                         selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
                     ),
-                    vol.Required(CONF_SIGNATURE): selector.TextSelector(
+                    vol.Optional(CONF_TOKEN): selector.TextSelector(
                         selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
                     ),
-                    vol.Required(CONF_TIMESTAMP): selector.TextSelector(
+                    vol.Optional(CONF_SIGNATURE): selector.TextSelector(
+                        selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
+                    ),
+                    vol.Optional(CONF_TIMESTAMP): selector.TextSelector(
                         selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
                     ),
                     vol.Optional(CONF_LANG, default=DEFAULT_LANG): str,
@@ -84,3 +107,4 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> None:
 
     client = PVHubClient.from_config(data)
     await hass.async_add_executor_job(client.get_analysis)
+    CONF_PASSWORD,

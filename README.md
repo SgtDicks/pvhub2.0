@@ -347,6 +347,8 @@ The integration ships a local brand icon hint using `mdi:solar-panel`, and the e
 5. Home Assistant will open a setup form asking for:
    - `PVHUB_API_URL`
    - `PVHUB_PLANT_ID / GROUPID`
+   - Authentication method
+   - PVHub username/password, or copied request headers
    - `PVHUB_COOKIE`
    - `PVHUB_TOKEN`
    - `PVHUB_SIGNATURE`
@@ -355,6 +357,26 @@ The integration ships a local brand icon hint using `mdi:solar-panel`, and the e
    - `PVHUB_TIMEZONE`
 
 The config flow performs one read-only validation request before creating the entry.
+
+### Authentication Modes
+
+The integration supports two setup modes:
+
+- Copied PVHub request headers: the most reliable current method. Copy `Cookie`, `Token`, `Signature`, and `Timestamp` from your own `/dew/w/plant/analysis/raw` request.
+- PVHub username and password: experimental. The PVHub web app posts to `/basic/v0/user/login` with an MD5-hashed password. This integration follows that first-party flow only when PVHub accepts it. It does not bypass MFA, CAPTCHA, Cloudflare, region checks, or other security controls.
+
+If PVHub rejects the stored auth details, Home Assistant will create a Repair issue titled `PVHub credentials expired` with instructions to update the integration.
+
+### Devices
+
+The integration creates logical Home Assistant devices from the data returned by the Analysis endpoint:
+
+- `PVHub Battery`
+- `PVHub Solar Inverter`
+- `PVHub Grid Meter`
+- `Site Power Usage`
+
+If a future PVHub endpoint exposes physical device serial numbers and models, the integration can be extended to create exact inverter, battery, and meter devices.
 
 ### HACS Custom Repository
 
@@ -376,6 +398,12 @@ Or add it manually:
 8. Add it from `Settings` -> `Devices & services`.
 
 HACS stores custom integrations under `custom_components/`; this project includes `hacs.json` and `custom_components/pvhub/manifest.json` for that layout.
+
+## Releases
+
+Current version: `v0.1.0`.
+
+Use the GitHub release/tag `v0.1.0` for the first stable HACS install.
 
 ## Dashboard Card
 
