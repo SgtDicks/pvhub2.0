@@ -33,7 +33,7 @@
       }
     },
     "error": {
-      "cannot_connect": "Could not read PVHub data with these details. Check copied headers and try again."
+      "cannot_connect": "Could not read PVHub data with these details. Username/password login is experimental and may be rejected by PVHub's signed-request flow. Use copied request headers from Chrome DevTools for now."
     },
     "abort": {
       "already_configured": "This PVHub plant is already configured."

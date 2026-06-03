@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import voluptuous as vol
@@ -30,6 +31,9 @@ from .const import (
 )
 
 
+_LOGGER = logging.getLogger(__name__)
+
+
 class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a PVHub config flow."""
 
@@ -50,6 +54,9 @@ class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 await validate_input(self.hass, user_input)
             except PVHubError:
+                errors["base"] = "cannot_connect"
+            except Exception:
+                _LOGGER.exception("Unexpected error while validating PVHub config flow")
                 errors["base"] = "cannot_connect"
             else:
                 return self.async_create_entry(

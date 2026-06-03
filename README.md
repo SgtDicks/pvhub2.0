@@ -365,6 +365,8 @@ The integration supports two setup modes:
 - Copied PVHub request headers: the most reliable current method. Copy `Cookie`, `Token`, `Signature`, and `Timestamp` from your own `/dew/w/plant/analysis/raw` request.
 - PVHub username and password: experimental. The PVHub web app posts to `/basic/v0/user/login` with an MD5-hashed password. This integration follows that first-party flow only when PVHub accepts it. It does not bypass MFA, CAPTCHA, Cloudflare, region checks, or other security controls.
 
+At the moment, copied request headers are the recommended setup path. PVHub signs browser requests with `signature.js` and `signature.wasm`; username/password setup may fail until automatic signature generation is implemented.
+
 If PVHub rejects the stored auth details, Home Assistant will create a Repair issue titled `PVHub credentials expired` with instructions to update the integration.
 
 ### Devices
@@ -401,9 +403,9 @@ HACS stores custom integrations under `custom_components/`; this project include
 
 ## Releases
 
-Current version: `v0.1.1`.
+Current version: `v0.1.2`.
 
-Use the latest GitHub release for HACS installs. `v0.1.1` fixes a config-flow compatibility issue in the setup popup.
+Use the latest GitHub release for HACS installs. `v0.1.2` improves the setup error shown when username/password login is rejected by PVHub's signed-request flow.
 
 ## Dashboard Card
 

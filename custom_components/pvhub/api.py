@@ -138,6 +138,11 @@ class PVHubClient:
 
         if not self.auth.username or not self.auth.password:
             raise PVHubAuthError("PVHub username/password are required")
+        if not self.auth.signature or not self.auth.timestamp:
+            raise PVHubAuthError(
+                "PVHub username/password login currently requires automatic request signing. "
+                "Use copied request headers until signature generation is supported."
+            )
         parsed = urlparse(self.api_url)
         login_url = f"{parsed.scheme}://{parsed.netloc}/basic/v0/user/login"
         payload = {
