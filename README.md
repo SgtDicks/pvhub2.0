@@ -479,11 +479,3 @@ series:
 ```
 
 The same card is also saved in `homeassistant/power_flow_apexcharts.yaml`.
-
-## Suggestions
-
-- Keep the polling interval around 5 minutes unless you know PVHub tolerates faster refreshes.
-- Add sensors to Home Assistant's Energy dashboard only after you add energy-in-kWh entities; the current entities are power-in-kW snapshots.
-- Keep raw signed values as attributes for graphing, and friendly positive values as entity states for normal dashboard tiles.
-- Automating PVHub signature generation would make the integration more reliable than copied `PVHUB_SIGNATURE` and `PVHUB_TIMESTAMP` values.
-- Capturing a device inventory endpoint would let the integration create exact physical devices with serial numbers instead of logical devices.
