@@ -1,88 +1,104 @@
-"""Config flow for PVHub 2.0."""
-
+"""Config flow for PVHub integration."""
 from __future__ import annotations
-
-import logging
-from typing import Any
 
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant
+from homeassistant.data_entry_flow import FlowResult
 
-from .api import PVHubAuthError, PVHubClient, PVHubError
 from .const import (
+    DOMAIN,
     CONF_API_URL,
-    CONF_COOKIE,
-    CONF_LANG,
     CONF_PLANT_ID,
+    CONF_COOKIE,
+    CONF_TOKEN,
     CONF_SIGNATURE,
     CONF_TIMESTAMP,
+    CONF_LANG,
     CONF_TIMEZONE,
-    CONF_TOKEN,
     DEFAULT_API_URL,
     DEFAULT_LANG,
-    DOMAIN,
 )
 
 
-_LOGGER = logging.getLogger(__name__)
-
-
 class PVHubConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a PVHub config flow."""
+    """Handle a config flow for PVHub."""
 
     VERSION = 1
 
-    async def async_step_user(
-        self,
-        user_input: dict[str, Any] | None = None,
-    ):
-        """Handle the initial step."""
+    # ---------------------------------------------------------
+    # Initial setup
+    # ---------------------------------------------------------
+    async def async_step_user(self, user_input=None) -> FlowResult:
+        """Handle the initial setup step."""
+        if self._async_current_entries():
+            return self.async_abort(reason="single_instance_allowed")
 
-        errors: dict[str, str] = {}
+        if user_input is None:
+            return self.async_show_form(
+                step_id="user",
+                data_schema=self._schema(),
+            )
 
-        if user_input is not None:
-            await self.async_set_unique_id(user_input[CONF_PLANT_ID])
-            self._abort_if_unique_id_configured()
-
-            try:
-                await validate_input(self.hass, user_input)
-            except PVHubAuthError as exc:
-                _LOGGER.debug("PVHub authentication validation failed: %s", exc)
-                errors["base"] = "auth_failed"
-            except PVHubError as exc:
-                _LOGGER.debug("PVHub validation failed: %s", exc)
-                errors["base"] = "cannot_connect"
-            except Exception:
-                _LOGGER.exception("Unexpected error while validating PVHub config flow")
-                errors["base"] = "cannot_connect"
-            else:
-                return self.async_create_entry(
-                    title=f"PVHub {user_input[CONF_PLANT_ID][:8]}",
-                    data=user_input,
-                )
-
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_API_URL, default=DEFAULT_API_URL): str,
-                    vol.Required(CONF_PLANT_ID): str,
-                    vol.Required(CONF_COOKIE): str,
-                    vol.Required(CONF_TOKEN): str,
-                    vol.Required(CONF_SIGNATURE): str,
-                    vol.Required(CONF_TIMESTAMP): str,
-                    vol.Optional(CONF_LANG, default=DEFAULT_LANG): str,
-                    vol.Optional(CONF_TIMEZONE): str,
-                }
-            ),
-            errors=errors,
+        return self.async_create_entry(
+            title="PVHub",
+            data=user_input,
         )
 
+    # ---------------------------------------------------------
+    # Menu step (HA shows "Reconfigure")
+    # ---------------------------------------------------------
+    async def async_step_menu(self, user_input=None) -> FlowResult:
+        return self.async_show_menu(
+            step_id="menu",
+            menu_options=["reconfigure"],
+        )
 
-async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> None:
-    """Validate copied PVHub request details with one read-only request."""
+    # ---------------------------------------------------------
+    # Reconfigure existing entry
+    # ---------------------------------------------------------
+    async def async_step_reconfigure(self, user_input=None) -> FlowResult:
+        """Handle reconfiguration of the integration."""
+        entry = self._get_reconfigure_entry()
+        if entry is None:
+            return self.async_abort(reason="no_config_entry")
 
-    client = PVHubClient.from_config(data)
-    await hass.async_add_executor_job(client.get_analysis)
+        if user_input is None:
+            return self.async_show_form(
+                step_id="reconfigure",
+                data_schema=self._schema(entry.data),
+            )
+
+        # Update entry
+        self.hass.config_entries.async_update_entry(
+            entry,
+            data=user_input,
+        )
+
+        await self.hass.config_entries.async_reload(entry.entry_id)
+        return self.async_abort(reason="reconfigured")
+
+    # ---------------------------------------------------------
+    # Helpers
+    # ---------------------------------------------------------
+    def _schema(self, defaults=None):
+        """Shared schema for both setup and reconfigure."""
+        defaults = defaults or {}
+        return vol.Schema(
+            {
+                vol.Required(CONF_API_URL, default=defaults.get(CONF_API_URL, DEFAULT_API_URL)): str,
+                vol.Required(CONF_PLANT_ID, default=defaults.get(CONF_PLANT_ID, "")): str,
+                vol.Required(CONF_COOKIE, default=defaults.get(CONF_COOKIE, "")): str,
+                vol.Required(CONF_TOKEN, default=defaults.get(CONF_TOKEN, "")): str,
+                vol.Required(CONF_SIGNATURE, default=defaults.get(CONF_SIGNATURE, "")): str,
+                vol.Required(CONF_TIMESTAMP, default=defaults.get(CONF_TIMESTAMP, "")): str,
+                vol.Optional(CONF_LANG, default=defaults.get(CONF_LANG, DEFAULT_LANG)): str,
+                vol.Optional(CONF_TIMEZONE, default=defaults.get(CONF_TIMEZONE, "")): str,
+            }
+        )
+
+    def _get_reconfigure_entry(self):
+        """Return the config entry being reconfigured."""
+        entries = self.hass.config_entries.async_entries(DOMAIN)
+        return entries[0] if entries else None
+
