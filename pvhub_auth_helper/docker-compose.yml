@@ -1,0 +1,13 @@
+version: "3"
+services:
+  pvhub-auth-helper:
+    image: pvhub-auth-helper:latest
+    #build: .
+    container_name: pvhub-auth-helper
+    #restart: unless-stopped
+    env_file:
+      - .env
+    # Only needed for file mode -- harmless to leave mounted otherwise.
+    volumes:
+      - ./shared:/shared
+      - ./debug:/app/debug
